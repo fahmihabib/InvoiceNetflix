@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Netflix Invoice - HABIB TECH VISIONPLAY</title>
+  <style>
+    body {
+      font-family: "Courier New", monospace;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      background: #fff;
+      margin: auto;
+      padding: 30px;
+      border: 1px solid #ccc;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      font-family: "Courier New", monospace;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      font-family: "Courier New", monospace;
+    }
+    .invoice-box {
+      max-width: 750px;
+      margin: 40px auto;
+      border: 1px solid #eee;
+      padding: 30px;
+      font-size: 14px;
+      line-height: 20px;
+      color: #000;
+    }
+    .invoice-box table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .invoice-box table td {
+      padding: 5px;
+      vertical-align: top;
+    }
+    .invoice-box .header-table td {
+      border: none;
+    }
+    .invoice-box .header-table img {
+      width: 150px;
+      float: right;
+    }
+    .invoice-box table tr.heading td {
+      background: #eee;
+      font-weight: bold;
+      border: 1px solid #ddd;
+    }
+    .invoice-box table tr.item td {
+      border-bottom: 1px solid #eee;
+    }
+    .invoice-box table tr.total td:nth-child(2) {
+      border-top: 2px solid #000;
+      font-weight: bold;
+    }
+    .invoice-footer {
+      margin-top: 30px;
+      font-style: italic;
+      text-align: center;
+    }
+    .company-quote {
+      margin-top: 5px;
+      font-style: italic;
+      text-align: center;
+      color: #555;
+    }
+    .action-buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+    @media print {
+      .action-buttons {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Netflix Invoice Generator</h1>
+
+    <div class="form-group">
+      <label>Member Name</label>
+      <input type="text" id="memberName">
+    </div>
+    <div class="form-group">
+      <label>Profile Used</label>
+      <select id="profileUsed">
+        <option>(Netflix01)_akuplaykaupause@gmail.com</option>
+        <option>(Netflix02)_mhrswitch2021@gmail.com</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Payment For Month</label>
+      <select id="paymentMonth">
+        <option>January</option><option>February</option><option>March</option>
+        <option>April</option><option>May</option><option>June</option>
+        <option>July</option><option>August</option><option>September</option>
+        <option>October</option><option>November</option><option>December</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Amount (RM)</label>
+      <input type="number" id="amount">
+    </div>
+    <div class="form-group">
+      <label>Payment Status</label>
+      <select id="status">
+        <option>Successful</option>
+        <option>Declined</option>
+        <option>Pending</option>
+        <option>Waived</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Payment Date</label>
+      <input type="date" id="paymentDate">
+    </div>
+
+    <div class="action-buttons">
+      <button onclick="generateInvoice()">Generate Invoice</button>
+    </div>
+
+    <div id="invoiceContainer"></div>
+  </div>
+
+  <script>
+    function generateInvoice() {
+      const now = new Date();
+      const invoiceNum = `INV${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+
+      const name = document.getElementById("memberName").value.trim();
+      const profile = document.getElementById("profileUsed").value;
+      const month = document.getElementById("paymentMonth").value;
+      const amount = parseFloat(document.getElementById("amount").value).toFixed(2);
+      const status = document.getElementById("status").value;
+      const paymentDate = document.getElementById("paymentDate").value;
+
+      if (!name || isNaN(amount) || !paymentDate) {
+        alert("Please fill in all fields correctly.");
+        return;
+      }
+
+      const logo = "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg";
+      const container = document.getElementById("invoiceContainer");
+
+      container.innerHTML = `
+        <div class="invoice-box" id="invoice-${invoiceNum}">
+          <table class="header-table">
+            <tr>
+              <td>
+                <strong>HABIB TECH VISIONPLAY</strong><br>
+                <strong>Phone:</strong> 013-8987810<br>
+                <strong>Email:</strong> habibtechvisionplay@gmail.com<br>
+                <strong>Address:</strong><br>
+                8427 Kingsvale Circle<br>
+                Eastbrooke, CA 90234<br>
+                United States
+              </td>
+              <td style="text-align: right;">
+                <img src="${logo}" alt="Netflix Logo">
+              </td>
+            </tr>
+            <tr><td colspan="2" style="height: 80px;"></td></tr>
+          </table>
+
+          <table>
+            <tr>
+              <td>
+                <strong>Invoice #:</strong> ${invoiceNum}<br>
+                <strong>Payment Date:</strong> ${paymentDate}<br>
+              </td>
+              <td style="text-align: right;">
+                <strong>Bill To:</strong> ${name}<br>
+                <strong>Profile:</strong> ${profile}
+              </td>
+            </tr>
+          </table>
+
+          <table>
+            <tr class="heading">
+              <td>Details</td>
+              <td>Info</td>
+            </tr>
+            <tr class="item">
+              <td>Payment For Month</td>
+              <td>${month}</td>
+            </tr>
+            <tr class="item">
+              <td>Package</td>
+              <td>30 Days of Netflix 4K HDR</td>
+            </tr>
+            <tr class="item">
+              <td>Status</td>
+              <td>${status}</td>
+            </tr>
+            <tr class="item">
+              <td>Service Tax</td>
+              <td>0%</td>
+            </tr>
+            <tr class="item">
+              <td>Entertainment Tax</td>
+              <td>0%</td>
+            </tr>
+            <tr class="item">
+              <td>Overnight Stay for Movies (OSM) Tax</td>
+              <td>0%</td>
+            </tr>
+            <tr class="item">
+              <td>Madani Madanon Makdara Makjanda (M4) Tax</td>
+              <td>0%</td>
+            </tr>
+            <tr class="total">
+              <td></td>
+              <td>Total: RM ${amount}</td>
+            </tr>
+          </table>
+
+          <div class="invoice-footer">
+            Thank you for your payment!
+          </div>
+          <div class="company-quote">
+            “Your Official Gateway to Premium Streaming”
+          </div>
+
+          <div class="action-buttons">
+            <button onclick="printInvoice('${invoiceNum}')">Print This Invoice</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function printInvoice(id) {
+      const invoice = document.getElementById(`invoice-${id}`).outerHTML;
+      const win = window.open('', '_blank');
+      win.document.write(`
+        <html>
+          <head>
+            <title>Invoice ${id}</title>
+            <style>
+              body { font-family: 'Courier New', monospace; padding: 20px; }
+              .invoice-box { max-width: 750px; margin: auto; border: 1px solid #eee; padding: 30px; font-size: 14px; line-height: 20px; color: #000; }
+              table { width: 100%; border-collapse: collapse; }
+              td { padding: 5px; vertical-align: top; }
+              .header-table td { border: none; }
+              .header-table img { width: 150px; float: right; }
+              .heading td { background: #eee; font-weight: bold; border: 1px solid #ddd; }
+              .item td { border-bottom: 1px solid #eee; }
+              .total td:nth-child(2) { border-top: 2px solid #000; font-weight: bold; }
+              .invoice-footer { margin-top: 30px; font-style: italic; text-align: center; }
+              .company-quote { margin-top: 5px; font-style: italic; text-align: center; color: #555; }
+              .action-buttons { display: none; }
+            </style>
+          </head>
+          <body onload="window.print(); window.close();">
+            ${invoice}
+          </body>
+        </html>
+      `);
+    }
+  </script>
+</body>
+</html>
